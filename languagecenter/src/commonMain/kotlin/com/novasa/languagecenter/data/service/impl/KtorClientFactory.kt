@@ -63,7 +63,7 @@ class KtorClientFactory(
                     }
                 }
             }
-            retryIf { request, response ->
+            retryIf { _, response ->
                 if (!response.status.isSuccess()) {
                     KLogger.e("Response: $response")
                 }

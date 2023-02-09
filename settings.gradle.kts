@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LanguageCenter"
-include(":shared")
+rootProject.name = "languagecenter"
+include(":languagecenter")
 include(":languagecenterexample")

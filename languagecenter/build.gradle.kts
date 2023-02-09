@@ -7,8 +7,6 @@ plugins {
     id("com.android.library")
     id("co.touchlab.kermit")
     id("com.squareup.sqldelight")
-
-    id("maven-publish")
 }
 
 kotlin {
@@ -37,7 +35,6 @@ kotlin {
                 api(Dependencies.KotlinX.datetime)
 
                 api(Dependencies.Koin.core)
-                api(Dependencies.Koin.test)
 
                 implementation(Dependencies.Ktor.core)
                 implementation(Dependencies.Ktor.auth)
@@ -48,13 +45,7 @@ kotlin {
                 implementation(Dependencies.SqlDelight.runtime)
                 implementation(Dependencies.SqlDelight.coroutines)
 
-
                 api(Dependencies.Kermit.kermit)
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
             }
         }
         val androidMain by getting {
@@ -66,7 +57,6 @@ kotlin {
                 implementation(Dependencies.Compose.foundation)
             }
         }
-        val androidUnitTest by getting
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -81,15 +71,6 @@ kotlin {
                 implementation(Dependencies.Ktor.clientNative)
                 implementation(Dependencies.SqlDelight.driverNative)
             }
-        }
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
         }
     }
 }
@@ -114,17 +95,5 @@ android {
 sqldelight {
     database("LanguageCenterDatabase") {
         packageName = "com.novasa.languagecenter"
-    }
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.novasa.languagecenter"
-            artifactId = "kmm"
-            version = "0.1.3"
-
-            from(components["kotlin"])
-        }
     }
 }
