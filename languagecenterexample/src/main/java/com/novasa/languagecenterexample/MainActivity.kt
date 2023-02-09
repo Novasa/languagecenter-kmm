@@ -1,4 +1,4 @@
-package com.novasa.languagecenter
+package com.novasa.languagecenterexample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -12,10 +12,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.novasa.languagecenter.translations.Translations
+import com.novasa.languagecenterexample.translations.Translations
 import com.novasa.languagecenter.ui.composable.LocalLanguageCenter
 import com.novasa.languagecenter.ui.composable.translation
-import com.novasa.languagecenter.ui.theme.LanguageCenterTheme
+import com.novasa.languagecenterexample.ui.theme.LanguageCenterTheme
 
 class MainActivity : ComponentActivity() {
 

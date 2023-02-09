@@ -1,4 +1,4 @@
-package com.novasa.languagecenter.ui.theme
+package com.novasa.languagecenterexample.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

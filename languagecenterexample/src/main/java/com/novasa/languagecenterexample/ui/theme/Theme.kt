@@ -1,4 +1,4 @@
-package com.novasa.languagecenter.ui.theme
+package com.novasa.languagecenterexample.ui.theme
 
 import android.app.Activity
 import android.os.Build

@@ -7,6 +7,8 @@ plugins {
     id("com.android.library")
     id("co.touchlab.kermit")
     id("com.squareup.sqldelight")
+
+    id("maven-publish")
 }
 
 kotlin {
@@ -112,5 +114,17 @@ android {
 sqldelight {
     database("LanguageCenterDatabase") {
         packageName = "com.novasa.languagecenter"
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.novasa.languagecenter"
+            artifactId = "kmm"
+            version = "0.1"
+
+            from(components["kotlin"])
+        }
     }
 }

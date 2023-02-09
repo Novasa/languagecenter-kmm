@@ -1,6 +1,7 @@
-package com.novasa.languagecenter
+package com.novasa.languagecenterexample
 
 import android.app.Application
+import com.novasa.languagecenter.LanguageCenter
 import com.novasa.languagecenter.domain.model.LanguageCenterConfig
 
 class LanguageCenterExampleApplication : Application() {

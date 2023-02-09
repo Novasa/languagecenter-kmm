@@ -1,4 +1,4 @@
-package com.novasa.languagecenter.translations
+package com.novasa.languagecenterexample.translations
 
 import com.novasa.languagecenter.domain.model.LanguageCenterValue
 

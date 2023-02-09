@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.novasa.languagecenter"
+    namespace = "com.novasa.languagecenterexample"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.novasa.languagecenter"
+        applicationId = "com.novasa.languagecenterexample"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
