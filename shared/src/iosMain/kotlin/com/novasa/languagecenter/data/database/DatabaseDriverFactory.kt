@@ -6,6 +6,8 @@ import com.squareup.sqldelight.drivers.native.NativeSqliteDriver
 
 actual class DatabaseDriverFactory {
 
-    actual fun createDriver(): SqlDriver = NativeSqliteDriver(LanguageCenterDatabase.Schema, "test.db")
-
+    actual fun createDriver(): SqlDriver = NativeSqliteDriver(
+        schema = LanguageCenterDatabase.Schema,
+        name = DatabaseConstants.NAME
+    )
 }

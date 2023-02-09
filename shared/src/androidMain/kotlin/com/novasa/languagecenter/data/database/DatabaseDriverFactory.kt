@@ -10,7 +10,11 @@ actual class DatabaseDriverFactory {
     companion object {
         private lateinit var driver: SqlDriver
 
-        fun initialize(context: Context): SqlDriver = AndroidSqliteDriver(LanguageCenterDatabase.Schema, context, "test.db").also {
+        fun initialize(context: Context): SqlDriver = AndroidSqliteDriver(
+            schema = LanguageCenterDatabase.Schema,
+            context = context,
+            name = DatabaseConstants.NAME
+        ).also {
             driver = it
         }
     }
