@@ -20,6 +20,9 @@ UPDATE Language SET active = ? WHERE codename = ?;
 getActiveLanguage:
 SELECT * FROM Language WHERE active = 1;
 
+getFallbackLanguage:
+SELECT * FROM Language WHERE is_fallback = 1;
+
 setLanguageUpdated:
 UPDATE Language SET updated = ? WHERE codename = ?;
 

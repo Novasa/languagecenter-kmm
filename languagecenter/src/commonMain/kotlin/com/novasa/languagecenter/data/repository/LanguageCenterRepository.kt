@@ -11,8 +11,6 @@ interface LanguageCenterRepository {
 
     val translations: Flow<Map<String, LanguageCenterTranslation>>
 
-    val fallbackTranslations: Flow<Map<String, LanguageCenterTranslation>>
-
     suspend fun update()
 
     suspend fun setLanguage(language: String)

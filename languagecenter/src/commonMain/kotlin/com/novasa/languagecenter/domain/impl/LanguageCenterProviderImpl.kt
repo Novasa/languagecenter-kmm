@@ -5,9 +5,11 @@ import com.novasa.languagecenter.data.repository.LanguageCenterRepository
 import com.novasa.languagecenter.domain.model.*
 import com.novasa.languagecenter.domain.provider.LanguageCenterProvider
 import com.novasa.languagecenter.extension.fullKey
+import com.novasa.languagecenter.extension.string
 import com.novasa.languagecenter.injection.LanguageCenterKoinComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -23,10 +25,12 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
     private lateinit var repository: LanguageCenterRepository
 
     private val _status = MutableStateFlow<LanguageCenterStatus>(LanguageCenterStatus.NotInitialized)
-    override val status: StateFlow<LanguageCenterStatus>
-        get() = _status.asStateFlow()
+    override val status: StateFlow<LanguageCenterStatus> by lazy {
+        _status.asStateFlow()
+    }
 
     override val activeLanguage: StateFlow<LanguageCenterLanguage> by lazy {
+        throwIfNotInitialized()
         repository.activeLanguage.stateIn(
             scope = coroutineScope,
             started = SharingStarted.Eagerly,
@@ -35,15 +39,8 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
     }
 
     private val translations: StateFlow<Map<String, LanguageCenterTranslation>?> by lazy {
+        throwIfNotInitialized()
         repository.translations.stateIn(
-            scope = coroutineScope,
-            started = SharingStarted.Eagerly,
-            initialValue = null
-        )
-    }
-
-    private val fallbackTranslations: StateFlow<Map<String, LanguageCenterTranslation>?> by lazy {
-        repository.fallbackTranslations.stateIn(
             scope = coroutineScope,
             started = SharingStarted.Eagerly,
             initialValue = null
@@ -73,6 +70,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
     }
 
     override fun setLanguage(language: String) {
+        throwIfNotInitialized()
         updateStatus(LanguageCenterStatus.Updating)
 
         coroutineScope.launch {
@@ -87,23 +85,39 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
     }
 
     override fun getTranslation(value: LanguageCenterValue): Flow<String> = translations
+        .onStart {
+            createTranslationIfNotExists(value)
+        }
         .filterNotNull()
         .map { translations ->
-            translations[value.fullKey()]?.value ?: value.let {
-                if (status.value is LanguageCenterStatus.Ready) {
-                    createTranslation(value)
-                }
-                it.fallback
-            }
+            translations[value.fullKey()]?.value ?: value.fallback
         }
 
-    private fun createTranslation(value: LanguageCenterValue) {
+    @OptIn(FlowPreview::class)
+    private fun createTranslationIfNotExists(value: LanguageCenterValue) {
         coroutineScope.launch {
             try {
-                repository.createTranslation(value)
+                val t = status
+                    .filterIsInstance<LanguageCenterStatus.Ready>()
+                    .flatMapMerge {
+                        translations.filterNotNull()
+                    }
+                    .first()
+
+                if (!t.containsKey(value.fullKey())) {
+                    Logger.d("Translation for value ${value.string()} did not exist. Creating...")
+                    repository.createTranslation(value)
+                }
+
             } catch (e: Exception) {
                 Logger.e("Failed to create translation", e)
             }
+        }
+    }
+
+    private fun throwIfNotInitialized() {
+        if (!::_config.isInitialized) {
+            throw IllegalStateException("Language Center has not been initialized! Please call LanguageCenterProvider.initialize with the proper configuration.")
         }
     }
 }

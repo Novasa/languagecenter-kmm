@@ -26,7 +26,7 @@ internal class LanguageCenterRepositoryImpl(
 
 ) : LanguageCenterRepository {
 
-    private val currentLanguageCode: String
+    private val preferredLanguage: String
         get() = database.infoQueries.forcedLanguage
             ?: systemLanguageProvider.systemLanguage
 
@@ -42,12 +42,21 @@ internal class LanguageCenterRepositoryImpl(
     override val translations: Flow<Map<String, LanguageCenterTranslation>> by lazy {
         database.translationQueries.getActiveTranslations()
             .toModelFlow()
-            .onEach { Logger.d("Translations updated") }
-    }
+            .map { translations ->
+                if (database.languageQueries.activeLanguage?.codename != database.languageQueries.fallbackLanguage?.codename) {
+                    translations.toMutableMap().apply {
+                        database.translationQueries.getFallbackTranslations()
+                            .executeAsList()
+                            .forEach {
+                                if (!containsKey(it.key)) {
+                                    put(it.key, it.toModel())
+                                }
+                            }
+                    }.toMap()
 
-    override val fallbackTranslations: Flow<Map<String, LanguageCenterTranslation>> by lazy {
-        database.translationQueries.getFallbackTranslations()
-            .toModelFlow()
+                } else translations
+            }
+            .onEach { Logger.d("Translations updated") }
     }
 
     private fun Query<Translation>.toModelFlow() = this
@@ -59,9 +68,9 @@ internal class LanguageCenterRepositoryImpl(
 
     override suspend fun update() = withContext(dispatchers.io) {
 
-        val currentLanguage = currentLanguageCode
+        val preferredLanguage = preferredLanguage
 
-        Logger.d("Updating ($currentLanguage)...")
+        Logger.d("Updating...")
 
         val languages = service.getLanguages()
 
@@ -69,15 +78,22 @@ internal class LanguageCenterRepositoryImpl(
 
         database.languageQueries.insertLanguages(languages)
 
-        languages.run {
-            find { it.codename == currentLanguage }
-                ?: find { it.isFallback }
+        val preferred = languages.find { it.codename == preferredLanguage }
+        val fallback = languages.find { it.isFallback }
 
-        }?.let {
-            database.languageQueries.setActiveLanguage(it.codename)
+        preferred?.let {
+            Logger.d("Preferred language: ${it.codename}")
             updateLanguage(it)
+            database.languageQueries.setActiveLanguage(it.codename)
 
-        } ?: Logger.e("No language found")
+        } ?: Logger.d("Preferred language not found")
+
+        fallback?.let {
+            if (it.codename != preferred?.codename) {
+                Logger.d("Fallback language (${it.codename}) differed from preferred language")
+                updateLanguage(it)
+            }
+        } ?: Logger.e("Fallback language not found")
     }
 
     override suspend fun setLanguage(language: String) = withContext(dispatchers.io) {

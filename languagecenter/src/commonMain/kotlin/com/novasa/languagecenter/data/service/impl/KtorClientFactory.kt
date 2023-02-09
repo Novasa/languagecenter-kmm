@@ -78,7 +78,7 @@ class KtorClientFactory(
 
         install(Logging) {
             logger = ktorLogger
-            level = LogLevel.ALL
+            level = LogLevel.INFO
         }
     }
 }

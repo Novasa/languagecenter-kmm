@@ -2,7 +2,7 @@
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.8.0"
+    kotlin("plugin.serialization")
 
     id("com.android.library")
     id("co.touchlab.kermit")
@@ -24,7 +24,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "LanguageCenter"
         }
     }
 
@@ -50,7 +50,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                implementation(Dependencies.Jetpack.startup)
+                api(Dependencies.Jetpack.startup)
                 implementation(Dependencies.Ktor.clientAndroid)
                 implementation(Dependencies.SqlDelight.driverAndroid)
 

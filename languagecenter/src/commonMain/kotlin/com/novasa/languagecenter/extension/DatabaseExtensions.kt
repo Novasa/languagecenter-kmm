@@ -1,6 +1,7 @@
 package com.novasa.languagecenter.extension
 
 import com.novasa.languagecenter.InfoQueries
+import com.novasa.languagecenter.Language
 import com.novasa.languagecenter.LanguageQueries
 import com.novasa.languagecenter.TranslationQueries
 import com.novasa.languagecenter.data.dto.LanguageDto
@@ -43,9 +44,11 @@ internal fun LanguageQueries.insertLanguages(languages: List<LanguageDto>) {
 
 internal fun LanguageQueries.setActiveLanguage(codename: String) {
     transaction {
-        val current = getActiveLanguage().executeAsOneOrNull()
+        val current = activeLanguage
         current?.let {
-            setLanguageActive(false, it.codename)
+            if (it.codename != codename) {
+                setLanguageActive(false, it.codename)
+            }
         }
         if (codename != current?.codename) {
             setLanguageActive(true, codename)
@@ -53,12 +56,14 @@ internal fun LanguageQueries.setActiveLanguage(codename: String) {
     }
 }
 
-internal fun LanguageQueries.setUpdated(language: String, updated: Long) = setLanguageUpdated(
-    updated = updated,
-    codename = language
-)
+internal val LanguageQueries.activeLanguage: Language?
+    get() = getActiveLanguage().executeAsOneOrNull()
+
+internal val LanguageQueries.fallbackLanguage: Language?
+    get() = getFallbackLanguage().executeAsOneOrNull()
 
 internal fun LanguageQueries.getLanguage(language: String) = getLanguageByCodename(language).executeAsOneOrNull()
+
 
 internal fun TranslationQueries.insertTranslations(translations: List<TranslationDto>) {
     transaction {
