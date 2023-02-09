@@ -64,7 +64,8 @@ class KtorClientFactory(
                 }
             }
             retryIf { _, response ->
-                if (!response.status.isSuccess()) {
+                if (!response.status.isSuccess() && response.status != HttpStatusCode.Unauthorized) {
+                    // Don't display 401, as basic auth scheme will send the request unauthenticated first every time a request is made.
                     KLogger.e("Response: $response")
                 }
                 false
