@@ -63,6 +63,12 @@ class KtorClientFactory(
                     }
                 }
             }
+            retryIf { request, response ->
+                if (!response.status.isSuccess()) {
+                    KLogger.e("Response: $response")
+                }
+                false
+            }
 
             delayMillis { attempt -> attempt * 1000L }
         }

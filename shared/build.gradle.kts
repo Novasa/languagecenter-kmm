@@ -122,7 +122,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.novasa.languagecenter"
             artifactId = "kmm"
-            version = "0.1"
+            version = "0.1.3"
 
             from(components["kotlin"])
         }
