@@ -1,0 +1,21 @@
+CREATE TABLE Translation(
+    key TEXT NOT NULL,
+    value TEXT NOT NULL,
+    language TEXT NOT NULL,
+    PRIMARY KEY (key, language),
+    FOREIGN KEY (language) REFERENCES Language(codename) ON DELETE CASCADE
+);
+
+insertTranslations:
+INSERT OR REPLACE INTO Translation (key, value, language)
+VALUES (?, ?, ?);
+
+getActiveTranslations:
+SELECT Translation.* FROM Translation
+JOIN Language ON Translation.language = Language.codename
+WHERE Language.active = 1;
+
+getFallbackTranslations:
+SELECT Translation.* FROM Translation
+JOIN Language ON Translation.language = Language.codename
+WHERE Language.is_fallback = 1;

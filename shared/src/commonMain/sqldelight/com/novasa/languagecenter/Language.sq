@@ -1,0 +1,28 @@
+CREATE TABLE Language (
+	codename TEXT NOT NULL PRIMARY KEY,
+	name TEXT NOT NULL,
+	is_fallback INTEGER AS Boolean NOT NULL,
+	timestamp INTEGER NOT NULL,
+	active Integer AS Boolean NOT NULL,
+	updated INTEGER
+);
+
+insertLanguage:
+INSERT INTO Language (codename, name, is_fallback, timestamp, active)
+VALUES (?, ?, ?, ?, 0);
+
+updateLanguage:
+UPDATE Language SET name = ?, is_fallback = ?, timestamp = ? WHERE codename = ?;
+
+setLanguageActive:
+UPDATE Language SET active = ? WHERE codename = ?;
+
+getActiveLanguage:
+SELECT * FROM Language WHERE active = 1;
+
+setLanguageUpdated:
+UPDATE Language SET updated = ? WHERE codename = ?;
+
+getLanguageByCodename:
+SELECT * FROM Language WHERE codename = ?;
+

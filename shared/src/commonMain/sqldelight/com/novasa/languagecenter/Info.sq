@@ -1,0 +1,17 @@
+CREATE TABLE Info (
+    id INTEGER PRIMARY KEY CHECK (id = 0),
+    forcedLanguage TEXT
+);
+
+getCount:
+SELECT COUNT(*) FROM Info;
+
+create:
+INSERT INTO Info (id, forcedLanguage)
+VALUES(0, NULL);
+
+get:
+SELECT * FROM Info WHERE id = 0;
+
+setCurrentLanguage:
+UPDATE Info SET forcedLanguage = ? WHERE id = 0;
