@@ -6,7 +6,7 @@ plugins {
 
     id("com.android.library")
     id("co.touchlab.kermit")
-    id("com.squareup.sqldelight")
+    id(Dependencies.SqlDelight.repo)
 }
 
 kotlin {

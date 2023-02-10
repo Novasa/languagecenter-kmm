@@ -54,14 +54,16 @@ object Dependencies {
 
     /** SQLite Database */
     object SqlDelight {
-        object Versions {
-            const val core = "1.5.5"
-        }
 
-        const val runtime = "com.squareup.sqldelight:runtime:${Versions.core}"
-        const val coroutines = "com.squareup.sqldelight:coroutines-extensions:${Versions.core}"
-        const val driverAndroid = "com.squareup.sqldelight:android-driver:${Versions.core}"
-        const val driverNative = "com.squareup.sqldelight:native-driver:${Versions.core}"
+        const val repo = "com.squareup.sqldelight"
+        const val version = "1.5.5"
+
+        const val runtime = "$repo:runtime:$version"
+        const val coroutines = "$repo:coroutines-extensions:$version"
+        const val primitives = "$repo:primitive-adapters:$version"
+
+        const val driverAndroid = "$repo:android-driver:$version"
+        const val driverNative = "$repo:native-driver:$version"
     }
 
     /** Kermit the Log */
