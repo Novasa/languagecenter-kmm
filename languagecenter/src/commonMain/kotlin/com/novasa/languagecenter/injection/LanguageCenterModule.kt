@@ -27,7 +27,7 @@ internal val languageCenterModule = module {
     singleOf(::KermitKtorLogger) bind Logger::class
 
     single {
-        val config: LanguageCenterConfig = getProperty("props")
+        val config: LanguageCenterConfig = getProperty(LanguageCenterKoinComponent.PROP_CONFIG)
         ServiceConfig(
             host = "language.novasa.com",
             baseUrl = "${config.instance}/api/",

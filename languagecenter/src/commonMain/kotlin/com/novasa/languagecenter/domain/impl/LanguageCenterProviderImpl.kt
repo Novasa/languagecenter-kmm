@@ -90,7 +90,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
         }
         .filterNotNull()
         .map { translations ->
-            translations[value.fullKey()]?.value ?: value.fallback
+            translations[value.fullKey]?.value ?: value.fallback
         }
 
     @OptIn(FlowPreview::class)
@@ -104,7 +104,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
                     }
                     .first()
 
-                if (!t.containsKey(value.fullKey())) {
+                if (!t.containsKey(value.fullKey)) {
                     Logger.d("Translation for value ${value.string()} did not exist. Creating...")
                     repository.createTranslation(value)
                 }
