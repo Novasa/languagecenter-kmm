@@ -88,4 +88,10 @@ object Dependencies {
         const val material = "androidx.compose.material3:material3:${Versions.material3}"
         const val activity = "androidx.activity:activity-compose:${Versions.activity}"
     }
+
+    object NativeCoroutines {
+        const val version = "0.13.3"
+        const val repo = "com.rickclephas.kmp.nativecoroutines"
+        const val plugin = repo
+    }
 }

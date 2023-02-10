@@ -7,6 +7,8 @@ plugins {
     id("com.android.library")
     id("co.touchlab.kermit")
     id(Dependencies.SqlDelight.repo)
+    id(Dependencies.NativeCoroutines.plugin)
+
 }
 
 kotlin {
