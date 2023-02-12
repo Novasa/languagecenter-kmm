@@ -8,3 +8,6 @@ import com.novasa.languagecenter.domain.model.LanguageCenterValue
 fun translation(translation: LanguageCenterValue) = LocalLanguageCenter.current.getTranslation(translation)
     .collectAsState(initial = translation.fallback)
     .value
+
+@Composable
+operator fun LanguageCenterValue.invoke() = translation(this)
