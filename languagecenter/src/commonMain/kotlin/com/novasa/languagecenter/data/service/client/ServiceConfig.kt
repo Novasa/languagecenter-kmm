@@ -1,6 +1,6 @@
 package com.novasa.languagecenter.data.service.client
 
-class ServiceConfig(
+internal class ServiceConfig(
     val host: String,
     val baseUrl: String,
     val username: String,

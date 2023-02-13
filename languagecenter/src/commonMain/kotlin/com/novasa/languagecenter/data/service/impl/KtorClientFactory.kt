@@ -16,7 +16,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import co.touchlab.kermit.Logger.Companion as KLogger
 
-class KtorClientFactory(
+internal class KtorClientFactory(
     private val config: ServiceConfig,
     private val ktorLogger: Logger
 

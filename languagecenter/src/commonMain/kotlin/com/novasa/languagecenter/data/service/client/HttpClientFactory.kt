@@ -2,7 +2,7 @@ package com.novasa.languagecenter.data.service.client
 
 import io.ktor.client.*
 
-interface HttpClientFactory {
+internal interface HttpClientFactory {
 
     fun create(): HttpClient
 }
