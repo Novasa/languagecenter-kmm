@@ -12,9 +12,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.novasa.languagecenterexample.translations.Translations
 import com.novasa.languagecenter.ui.composable.LocalLanguageCenter
+import com.novasa.languagecenter.ui.composable.invoke
 import com.novasa.languagecenter.ui.composable.translation
+import com.novasa.languagecenterexample.translations.Translations
 import com.novasa.languagecenterexample.ui.theme.LanguageCenterTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,26 +33,34 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(20.dp)
                     ) {
 
+                        Text(text = Translations.LanguagecenterTest.Basic())
+
                         Text(text = translation(translation = Translations.Test.Test1))
 
                         Text(text = translation(translation = Translations.Test.Test2))
 
                         Text(text = translation(translation = Translations.Test.Test3))
 
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
 
                             Button(onClick = { lc.setLanguage("da") }) {
-                                Text(text = translation(translation = Translations.LCTest.Danish))
+                                Text(text = Translations.LanguagecenterTest.Danish())
                             }
                             Button(onClick = { lc.setLanguage("en") }) {
-                                Text(text = translation(translation = Translations.LCTest.English))
+                                Text(text = Translations.LanguagecenterTest.English())
                             }
                             Button(onClick = { lc.setLanguage("zh") }) {
-                                Text(text = translation(translation = Translations.LCTest.Chinese))
+                                Text(text = Translations.LanguagecenterTest.Chinese())
                             }
                         }
-                        Button(onClick = { lc.setLanguage("xx") }) {
-                            Text(text = translation(translation = Translations.LCTest.UnsupportedLanguage))
+                        Button(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            onClick = { lc.setLanguage("xx") }
+                        ) {
+                            Text(text = Translations.LanguagecenterTest.UnsupportedLanguage())
                         }
 
                         Text(

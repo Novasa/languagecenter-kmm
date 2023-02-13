@@ -1,27 +1,26 @@
 package com.novasa.languagecenterexample.translations
 
-import com.novasa.languagecenter.domain.model.LanguageCenterValue
+import com.novasa.languagecenter.domain.model.LanguageCenterCategory
 
-sealed interface Translations : LanguageCenterValue {
+object Translations {
 
-    sealed class Test(override val key: String, override val fallback: String) : Translations {
-        override val category: String = "test"
+    object Test : LanguageCenterCategory() {
 
-        object Test1 : Test(key = "test", fallback = "Fallback text 1")
+        object Test1 : Translation(fallback = "Fallback text 1")
 
-        object Test2 : Test(key = "test2", fallback = "Fallback text 2")
+        object Test2 : Translation(fallback = "Fallback text 2")
 
-        object Test3 : Test(key = "test3", fallback = "Fallback text 3") {
+        object Test3 : Translation(fallback = "Fallback text 3") {
             override val comment: String = "Comment for test 3"
         }
     }
 
-    sealed class LCTest(override val key: String, override val fallback: String) : Translations {
-        override val category: String = "languagecenter_test"
+    object LanguagecenterTest : LanguageCenterCategory() {
 
-        object Danish : LCTest(key = "danish", fallback = "Danish")
-        object English : LCTest(key = "english", fallback = "English")
-        object Chinese : LCTest(key = "chinese", fallback = "Chinese")
-        object UnsupportedLanguage : LCTest(key = "unsupported_language", fallback = "Unsupported language")
+        object Basic : Translation(fallback = "Language Center works?")
+        object Danish : Translation(fallback = "Danish")
+        object English : Translation(fallback = "English")
+        object Chinese : Translation(fallback = "Chinese")
+        object UnsupportedLanguage : Translation(fallback = "Unsupported language")
     }
 }

@@ -9,14 +9,12 @@ class LanguageCenterExampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        LanguageCenter {
-            initialize(
-                LanguageCenterConfig(
-                    instance = "test",
-                    username = "test",
-                    password = "test"
-                )
+        LanguageCenter.provider.initialize(
+            config = LanguageCenterConfig(
+                instance = "test",
+                username = "test",
+                password = "test"
             )
-        }
+        )
     }
 }
