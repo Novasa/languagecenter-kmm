@@ -2,9 +2,16 @@ package com.novasa.languagecenter.domain.model
 
 import com.novasa.languagecenter.extension.toSnakeCase
 
+/**
+ * Defines a translatable string.
+ *
+ * The key of the string will be generated from [category] concatenated with [id] as such:
+ *
+ * "category.id".
+ */
 interface LanguageCenterValue {
+    val id: String
     val category: String
-    val key: String
     val fallback: String
     val comment: String?
         get() = null
@@ -39,7 +46,7 @@ abstract class LanguageCenterCategory {
         override val comment: String? = null
 
     ) : LanguageCenterValue {
+        override val id: String = this::class.simpleName?.toSnakeCase() ?: throw IllegalArgumentException()
         override val category: String = this@LanguageCenterCategory.category.toSnakeCase()
-        override val key: String = this::class.simpleName?.toSnakeCase() ?: throw IllegalArgumentException()
     }
 }

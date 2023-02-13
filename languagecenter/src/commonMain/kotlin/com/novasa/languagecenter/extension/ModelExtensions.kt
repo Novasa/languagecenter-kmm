@@ -2,7 +2,7 @@ package com.novasa.languagecenter.extension
 
 import com.novasa.languagecenter.domain.model.LanguageCenterValue
 
-internal val LanguageCenterValue.fullKey: String
-    get() = "${category.lowercase()}.${key.lowercase()}"
+internal val LanguageCenterValue.key: String
+    get() = "$category.$id"
 
-internal fun LanguageCenterValue.string() = "[category: $category, key: $key, fallback: $fallback, comment: $comment]"
+internal fun LanguageCenterValue.string() = "[category: $category, id: $id, fallback: $fallback, comment: $comment]"

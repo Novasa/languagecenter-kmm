@@ -114,7 +114,7 @@ internal class LanguageCenterRepositoryImpl(
         Logger.d("Creating translation: ${value.string()}...")
         service.createTranslation(
             category = value.category,
-            key = value.key,
+            key = value.id,
             value = value.fallback,
             comment = value.comment
         )

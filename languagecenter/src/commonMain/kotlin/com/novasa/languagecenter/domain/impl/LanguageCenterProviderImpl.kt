@@ -4,7 +4,7 @@ import co.touchlab.kermit.Logger
 import com.novasa.languagecenter.data.repository.LanguageCenterRepository
 import com.novasa.languagecenter.domain.model.*
 import com.novasa.languagecenter.domain.provider.LanguageCenterProvider
-import com.novasa.languagecenter.extension.fullKey
+import com.novasa.languagecenter.extension.key
 import com.novasa.languagecenter.extension.string
 import com.novasa.languagecenter.injection.LanguageCenterKoinComponent
 import kotlinx.coroutines.CoroutineScope
@@ -90,7 +90,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
         }
         .filterNotNull()
         .map { translations ->
-            translations[value.fullKey]?.value ?: value.fallback
+            translations[value.key]?.value ?: value.fallback
         }
 
     @OptIn(FlowPreview::class)
@@ -104,7 +104,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
                     }
                     .first()
 
-                if (!t.containsKey(value.fullKey)) {
+                if (!t.containsKey(value.key)) {
                     Logger.d("Translation for value ${value.string()} did not exist. Creating...")
                     repository.createTranslation(value)
                 }
