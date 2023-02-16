@@ -11,6 +11,7 @@ import com.novasa.languagecenter.data.service.impl.KermitKtorLogger
 import com.novasa.languagecenter.data.service.impl.KtorLanguageCenterClientFactory
 import com.novasa.languagecenter.data.service.impl.KtorLanguageCenterService
 import com.novasa.languagecenter.domain.model.LanguageCenterConfig
+import com.novasa.languagecenter.logging.ktorLogLevel
 import com.novasa.languagecenter.platform.DispatchersFacade
 import com.novasa.languagecenter.platform.Platform
 import com.novasa.languagecenter.platform.SystemLanguageProvider
@@ -33,7 +34,7 @@ internal val languageCenterModule = module {
             baseUrl = "${config.instance}/api/",
             username = config.username,
             password = config.password,
-            logLevel = config.httpLogLevel
+            logLevel = config.httpLogLevel.ktorLogLevel
         )
     }
 

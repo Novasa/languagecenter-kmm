@@ -1,10 +1,12 @@
 package com.novasa.languagecenter.domain.model
 
-import io.ktor.client.plugins.logging.*
+import com.novasa.languagecenter.logging.HttpLogLevel
+import kotlin.time.Duration
 
 class LanguageCenterConfig(
     val instance: String,
     val username: String,
     val password: String,
-    val httpLogLevel: LogLevel = LogLevel.NONE
+    val periodicUpdate: Duration? = null,
+    val httpLogLevel: HttpLogLevel = HttpLogLevel.NONE
 )

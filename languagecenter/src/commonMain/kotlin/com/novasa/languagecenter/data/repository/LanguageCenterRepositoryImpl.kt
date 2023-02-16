@@ -9,6 +9,7 @@ import com.novasa.languagecenter.domain.model.LanguageCenterLanguage
 import com.novasa.languagecenter.domain.model.LanguageCenterTranslation
 import com.novasa.languagecenter.domain.model.LanguageCenterValue
 import com.novasa.languagecenter.extension.*
+import com.novasa.languagecenter.logging.LC_TAG
 import com.novasa.languagecenter.platform.DispatchersFacade
 import com.novasa.languagecenter.platform.SystemLanguageProvider
 import com.squareup.sqldelight.Query
@@ -35,7 +36,7 @@ internal class LanguageCenterRepositoryImpl(
             .asFlow()
             .mapToOneOrNull()
             .filterNotNull()
-            .onEach { Logger.d("[Language Center] Active language updated: $it") }
+            .onEach { Logger.d("$LC_TAG Active language updated: $it") }
             .map { it.toModel() }
     }
 
@@ -56,7 +57,7 @@ internal class LanguageCenterRepositoryImpl(
 
                 } else translations
             }
-            .onEach { Logger.d("[Language Center] Translations updated") }
+            .onEach { Logger.d("$LC_TAG Translations updated") }
     }
 
     private fun Query<Translation>.toModelFlow() = this
@@ -70,11 +71,11 @@ internal class LanguageCenterRepositoryImpl(
 
         val preferredLanguage = preferredLanguage
 
-        Logger.d("[Language Center] Preferred language: $preferredLanguage, updating...")
+        Logger.d("$LC_TAG Preferred language: $preferredLanguage, updating...")
 
         val languages = service.getLanguages()
 
-        Logger.d("[Language Center] Languages: $languages, inserting...")
+        Logger.d("$LC_TAG Available languages: $languages, inserting...")
 
         database.languageQueries.insertLanguages(languages)
 
@@ -82,26 +83,26 @@ internal class LanguageCenterRepositoryImpl(
         val fallback = languages.find { it.isFallback }
 
         preferred?.let {
-            Logger.d("[Language Center] Preferred language found (${it.codename}).")
+            Logger.d("$LC_TAG Preferred language found (${it.codename}).")
             database.languageQueries.setActiveLanguage(it.codename)
             updateLanguage(it)
 
-        } ?: Logger.d("[Language Center] Preferred language not found (${preferredLanguage}).")
+        } ?: Logger.d("$LC_TAG Preferred language not found (${preferredLanguage}).")
 
         fallback?.let {
             if (it.codename != preferred?.codename) {
-                Logger.d("[Language Center] Fallback language (${it.codename}) differed from preferred language (${preferredLanguage})")
+                Logger.d("$LC_TAG Fallback language (${it.codename}) differed from preferred language (${preferredLanguage})")
                 if (preferred == null) {
                     database.languageQueries.setActiveLanguage(it.codename)
                 }
                 updateLanguage(it)
             }
-        } ?: Logger.e("Fallback language not found")
+        } ?: Logger.e("$LC_TAG Fallback language not found")
     }
 
     override suspend fun setLanguage(language: String) = withContext(dispatchers.io) {
 
-        Logger.d("[Language Center] Setting language: $language...")
+        Logger.d("$LC_TAG Setting language: $language...")
 
         with(database) {
             transaction {
@@ -110,11 +111,11 @@ internal class LanguageCenterRepositoryImpl(
             }
         }
 
-        updateLanguage(language)
+        update()
     }
 
     override suspend fun createTranslation(value: LanguageCenterValue) = withContext(dispatchers.io) {
-        Logger.d("[Language Center] Creating translation: ${value.string()}...")
+        Logger.d("$LC_TAG Creating translation: ${value.string()}...")
         service.createTranslation(
             category = value.category,
             key = value.id,
@@ -135,15 +136,15 @@ internal class LanguageCenterRepositoryImpl(
         val remoteTimestamp = remoteLanguage.timestamp
 
         Logger.d {
-            "[Language Center] Timestamp check for language ($codename) Local: $localTimestamp, Remote: $remoteTimestamp, Diff: ${remoteTimestamp - localTimestamp}"
+            "$LC_TAG Timestamp check for language ($codename) Local: $localTimestamp, Remote: $remoteTimestamp, Diff: ${remoteTimestamp - localTimestamp}"
         }
 
         if (localTimestamp < remoteTimestamp) {
-            Logger.d("[Language Center] Language ($codename) out of date. Updating ...")
+            Logger.d("$LC_TAG Language ($codename) out of date. Updating ...")
 
             val result = service.getTranslations(codename)
 
-            Logger.d("[Language Center] ${result.size} translations found for language ($codename). Inserting...")
+            Logger.d("$LC_TAG ${result.size} translations found for language ($codename). Inserting...")
 
             database.apply {
                 transaction {
@@ -152,10 +153,10 @@ internal class LanguageCenterRepositoryImpl(
                 }
             }
 
-            Logger.d("[Language Center] Language ($codename) update complete")
+            Logger.d("$LC_TAG Language ($codename) update complete")
 
         } else {
-            Logger.d("[Language Center] Language ($codename) up to date.")
+            Logger.d("$LC_TAG Language ($codename) up to date.")
         }
     }
 }
