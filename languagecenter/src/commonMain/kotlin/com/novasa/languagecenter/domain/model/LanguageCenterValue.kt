@@ -50,3 +50,11 @@ abstract class LanguageCenterCategory {
         override val category: String = this@LanguageCenterCategory.category.toSnakeCase()
     }
 }
+
+/** Default data class implementation of [LanguageCenterValue] */
+data class DefaultLanguageCenterValue(
+    override val id: String,
+    override val category: String,
+    override val fallback: String,
+    override val comment: String? = null
+) : LanguageCenterValue
