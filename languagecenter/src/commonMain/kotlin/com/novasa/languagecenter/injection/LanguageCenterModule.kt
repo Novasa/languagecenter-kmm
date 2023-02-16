@@ -8,7 +8,7 @@ import com.novasa.languagecenter.data.service.api.LanguageCenterService
 import com.novasa.languagecenter.data.service.client.HttpClientFactory
 import com.novasa.languagecenter.data.service.client.ServiceConfig
 import com.novasa.languagecenter.data.service.impl.KermitKtorLogger
-import com.novasa.languagecenter.data.service.impl.KtorClientFactory
+import com.novasa.languagecenter.data.service.impl.KtorLanguageCenterClientFactory
 import com.novasa.languagecenter.data.service.impl.KtorLanguageCenterService
 import com.novasa.languagecenter.domain.model.LanguageCenterConfig
 import com.novasa.languagecenter.platform.DispatchersFacade
@@ -32,11 +32,12 @@ internal val languageCenterModule = module {
             host = "language.novasa.com",
             baseUrl = "${config.instance}/api/",
             username = config.username,
-            password = config.password
+            password = config.password,
+            logLevel = config.httpLogLevel
         )
     }
 
-    singleOf(::KtorClientFactory) bind HttpClientFactory::class
+    singleOf(::KtorLanguageCenterClientFactory) bind HttpClientFactory::class
 
     single {
         val factory: HttpClientFactory = get()

@@ -16,7 +16,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import co.touchlab.kermit.Logger.Companion as KLogger
 
-internal class KtorClientFactory(
+internal class KtorLanguageCenterClientFactory(
     private val config: ServiceConfig,
     private val ktorLogger: Logger
 
@@ -79,7 +79,7 @@ internal class KtorClientFactory(
 
         install(Logging) {
             logger = ktorLogger
-            level = LogLevel.INFO
+            level = config.logLevel
         }
     }
 }
