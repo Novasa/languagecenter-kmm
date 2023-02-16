@@ -83,14 +83,17 @@ internal class LanguageCenterRepositoryImpl(
 
         preferred?.let {
             Logger.d("[Language Center] Preferred language found (${it.codename}).")
-            updateLanguage(it)
             database.languageQueries.setActiveLanguage(it.codename)
+            updateLanguage(it)
 
         } ?: Logger.d("[Language Center] Preferred language not found (${preferredLanguage}).")
 
         fallback?.let {
             if (it.codename != preferred?.codename) {
                 Logger.d("[Language Center] Fallback language (${it.codename}) differed from preferred language (${preferredLanguage})")
+                if (preferred == null) {
+                    database.languageQueries.setActiveLanguage(it.codename)
+                }
                 updateLanguage(it)
             }
         } ?: Logger.e("Fallback language not found")
