@@ -39,7 +39,7 @@ interface LanguageCenterValue {
  * ```
  */
 abstract class LanguageCenterCategory {
-    open val category = this::class.simpleName ?: throw IllegalArgumentException()
+    open val category = this::class.simpleName?.toSnakeCase() ?: throw IllegalArgumentException()
 
     abstract inner class Translation(
         override val fallback: String,
@@ -47,7 +47,7 @@ abstract class LanguageCenterCategory {
 
     ) : LanguageCenterValue {
         override val id: String = this::class.simpleName?.toSnakeCase() ?: throw IllegalArgumentException()
-        override val category: String = this@LanguageCenterCategory.category.toSnakeCase()
+        override val category: String = this@LanguageCenterCategory.category
     }
 }
 
