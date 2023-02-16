@@ -57,6 +57,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
 
         config.periodicUpdate?.let { period ->
             coroutineScope.launch {
+                Logger.d("$LC_TAG Starting periodic updates: $period")
                 while (true) {
                     delay(period)
                     update()
