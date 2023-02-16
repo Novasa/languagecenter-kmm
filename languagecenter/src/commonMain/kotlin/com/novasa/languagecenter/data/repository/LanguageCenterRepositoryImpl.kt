@@ -35,7 +35,7 @@ internal class LanguageCenterRepositoryImpl(
             .asFlow()
             .mapToOneOrNull()
             .filterNotNull()
-            .onEach { Logger.d("Active language updated: $it") }
+            .onEach { Logger.d("[Language Center] Active language updated: $it") }
             .map { it.toModel() }
     }
 
@@ -56,7 +56,7 @@ internal class LanguageCenterRepositoryImpl(
 
                 } else translations
             }
-            .onEach { Logger.d("Translations updated") }
+            .onEach { Logger.d("[Language Center] Translations updated") }
     }
 
     private fun Query<Translation>.toModelFlow() = this
@@ -70,11 +70,11 @@ internal class LanguageCenterRepositoryImpl(
 
         val preferredLanguage = preferredLanguage
 
-        Logger.d("Updating...")
+        Logger.d("[Language Center] Preferred language: $preferredLanguage, updating...")
 
         val languages = service.getLanguages()
 
-        Logger.d("Languages: $languages, inserting...")
+        Logger.d("[Language Center] Languages: $languages, inserting...")
 
         database.languageQueries.insertLanguages(languages)
 
@@ -82,15 +82,15 @@ internal class LanguageCenterRepositoryImpl(
         val fallback = languages.find { it.isFallback }
 
         preferred?.let {
-            Logger.d("Preferred language: ${it.codename}")
+            Logger.d("[Language Center] Preferred language found (${it.codename}).")
             updateLanguage(it)
             database.languageQueries.setActiveLanguage(it.codename)
 
-        } ?: Logger.d("Preferred language not found")
+        } ?: Logger.d("[Language Center] Preferred language not found (${preferredLanguage}).")
 
         fallback?.let {
             if (it.codename != preferred?.codename) {
-                Logger.d("Fallback language (${it.codename}) differed from preferred language")
+                Logger.d("[Language Center] Fallback language (${it.codename}) differed from preferred language (${preferredLanguage})")
                 updateLanguage(it)
             }
         } ?: Logger.e("Fallback language not found")
@@ -98,7 +98,7 @@ internal class LanguageCenterRepositoryImpl(
 
     override suspend fun setLanguage(language: String) = withContext(dispatchers.io) {
 
-        Logger.d("Setting language: $language...")
+        Logger.d("[Language Center] Setting language: $language...")
 
         with(database) {
             transaction {
@@ -111,7 +111,7 @@ internal class LanguageCenterRepositoryImpl(
     }
 
     override suspend fun createTranslation(value: LanguageCenterValue) = withContext(dispatchers.io) {
-        Logger.d("Creating translation: ${value.string()}...")
+        Logger.d("[Language Center] Creating translation: ${value.string()}...")
         service.createTranslation(
             category = value.category,
             key = value.id,
@@ -127,26 +127,32 @@ internal class LanguageCenterRepositoryImpl(
 
     private suspend fun updateLanguage(remoteLanguage: LanguageDto) {
 
-        val localLanguage = database.languageQueries.getLanguage(language = remoteLanguage.codename)
+        val codename = remoteLanguage.codename
+        val localTimestamp = database.languageQueries.getLanguage(language = remoteLanguage.codename)?.updated ?: 0L
+        val remoteTimestamp = remoteLanguage.timestamp
 
-        if ((localLanguage?.updated ?: 0L) < remoteLanguage.timestamp) {
-            Logger.d("Updating language ${remoteLanguage.codename}...")
+        Logger.d {
+            "[Language Center] Timestamp check for language ($codename) Local: $localTimestamp, Remote: $remoteTimestamp, Diff: ${remoteTimestamp - localTimestamp}"
+        }
 
-            val result = service.getTranslations(remoteLanguage.codename)
+        if (localTimestamp < remoteTimestamp) {
+            Logger.d("[Language Center] Language ($codename) out of date. Updating ...")
 
-            Logger.d("${result.size} translations found. Inserting...")
+            val result = service.getTranslations(codename)
+
+            Logger.d("[Language Center] ${result.size} translations found for language ($codename). Inserting...")
 
             database.apply {
                 transaction {
                     translationQueries.insertTranslations(result)
-                    languageQueries.setLanguageUpdated(remoteLanguage.timestamp, remoteLanguage.codename)
+                    languageQueries.setLanguageUpdated(remoteLanguage.timestamp, codename)
                 }
             }
 
-            Logger.d("Language (${remoteLanguage.codename}) update complete")
+            Logger.d("[Language Center] Language ($codename) update complete")
 
         } else {
-            Logger.d("Language (${remoteLanguage.codename}) up to date.")
+            Logger.d("[Language Center] Language ($codename) up to date.")
         }
     }
 }
