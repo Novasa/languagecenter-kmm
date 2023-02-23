@@ -1,10 +1,11 @@
 package com.novasa.languagecenter.platform
 
-import platform.Foundation.NSLocaleLanguageCode
+import platform.Foundation.*
 
 actual class SystemLanguageProvider {
 
     actual val systemLanguage: String
-        get() = NSLocaleLanguageCode ?: ""
-
+        get() = NSLocale.preferredLanguages.firstOrNull()?.toString()?.let { identifier ->
+            NSLocale.componentsFromLocaleIdentifier(identifier)[NSLocaleLanguageCode]?.toString()
+        } ?: "en"
 }

@@ -83,9 +83,10 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
 
     override fun setLanguage(language: String) {
         throwIfNotInitialized()
-        updateStatus(LanguageCenterStatus.Updating)
 
         coroutineScope.launch {
+            updateStatus(LanguageCenterStatus.Updating)
+
             try {
                 repository.setLanguage(language)
                 updateStatus(LanguageCenterStatus.Ready(activeLanguage.value))
