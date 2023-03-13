@@ -7,13 +7,13 @@ import com.novasa.languagecenter.domain.provider.LanguageCenterProvider
 import com.novasa.languagecenter.extension.key
 import com.novasa.languagecenter.extension.string
 import com.novasa.languagecenter.injection.LanguageCenterKoinComponent
-import com.novasa.languagecenter.logging.LC_TAG
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import org.koin.core.component.inject
 
 internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCenterKoinComponent() {
 
+    private val logger: Logger by inject()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     private lateinit var _config: LanguageCenterConfig
@@ -57,7 +57,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
 
         config.periodicUpdate?.let { period ->
             coroutineScope.launch {
-                Logger.d("$LC_TAG Starting periodic updates: $period")
+                logger.d("Starting periodic updates: $period")
                 while (true) {
                     delay(period)
                     update()
@@ -75,7 +75,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
                 updateStatus(LanguageCenterStatus.Ready(activeLanguage.value))
 
             } catch (e: Exception) {
-                Logger.e("$LC_TAG Failed update", e)
+                logger.e("Failed update", e)
                 updateStatus(LanguageCenterStatus.Failure(e))
             }
         }
@@ -91,7 +91,7 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
                 repository.setLanguage(language)
                 updateStatus(LanguageCenterStatus.Ready(activeLanguage.value))
             } catch (e: Exception) {
-                Logger.e("$LC_TAG Failed to set language", e)
+                logger.e("Failed to set language", e)
                 updateStatus(LanguageCenterStatus.Failure(e))
             }
         }
@@ -118,12 +118,12 @@ internal class LanguageCenterProviderImpl : LanguageCenterProvider, LanguageCent
                     .first()
 
                 if (!t.containsKey(value.key)) {
-                    Logger.d("$LC_TAG Translation for value ${value.string()} did not exist. Creating...")
+                    logger.d("Translation for value ${value.string()} did not exist. Creating...")
                     repository.createTranslation(value)
                 }
 
             } catch (e: Exception) {
-                Logger.e("$LC_TAG Failed to create translation", e)
+                logger.e("Failed to create translation", e)
             }
         }
     }
