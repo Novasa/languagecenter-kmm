@@ -50,8 +50,8 @@ android {
 
 dependencies {
 
-
     implementation(project(":languagecenter"))
+
     implementation(Dependencies.Compose.ui)
     implementation(Dependencies.Compose.uiTooling)
     implementation(Dependencies.Compose.uiToolingPreview)
@@ -64,5 +64,4 @@ dependencies {
     implementation(Dependencies.Koin.core)
     implementation(Dependencies.Koin.android)
     implementation(Dependencies.Koin.compose)
-    implementation("androidx.core:core-ktx:+")
 }
